@@ -2,13 +2,12 @@
 import pandas as pd
 
 import dash
-from dash import Dash
+#from dash import Dash
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 import colorlover as cl
 import numpy as np
-from flask import Flask
 
 df_targets = pd.read_csv('data_out.csv')
 
@@ -279,7 +278,7 @@ def serve_layout():
 
 #server = Flask(__name__)
 #app = Dash(__name__, server=server, csrf_protect=False)
-app = Dash(__name__)
+app = dash.Dash(__name__)
 server = app.server
 
 
@@ -306,8 +305,6 @@ app.layout = serve_layout()
     [Input('subbutton', 'n_clicks'), Input('overview', 'clickData')],
     [State('peak_current', 'value'), State('category-filter', 'value')])
 def filter(n_clicks, selected_value, range_value, category_filter):
-    print
-    selected_value
     if selected_value is None:
         filter_li = category_filter
         filter_li = [f for f in filter_li if f is not None]
@@ -332,4 +329,4 @@ def filter(n_clicks, selected_value, range_value, category_filter):
 
 
 if __name__ == '__main__':
-    app.run_server(threaded=True)
+    app.run_server()
