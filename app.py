@@ -277,8 +277,12 @@ def serve_layout():
     return layout
 
 
-server = Flask(__name__)
-app = Dash(__name__, server=server, csrf_protect=False)
+#server = Flask(__name__)
+#app = Dash(__name__, server=server, csrf_protect=False)
+app = Dash(__name__)
+server = app.server
+
+
 app.css.append_css({
     'external_url': (
         'https://cdn.rawgit.com/chriddyp/0247653a7c52feb4c48437e1c1837f75'
