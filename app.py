@@ -173,7 +173,8 @@ def serve_layout():
     
         The number of compounds published for a target in a given year gives an indication of the confidence at that 
         point in time that the target may yield a successful drug. The following plots show the moving average of the 
-        normalised number of compounds published each year since 1990 for targets in ChEMBL.
+        normalised number of compounds published each year since 1990 for targets in ChEMBL. Each line is coloured by the
+        targets *attention score*, the ration between its current and peak publication rate.
         
         ***
     
@@ -249,7 +250,7 @@ def serve_layout():
                 )
             ], className='row', style={'padding-bottom': '10px'}),
             html.Div([
-                html.Label('Peak:Recent', id='num_compounds_label', className='inline'),
+                html.Label('Attention score', id='num_compounds_label', className='inline'),
                 dcc.RangeSlider(
                     id='peak_current',
                     min=0,
