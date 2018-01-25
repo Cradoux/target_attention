@@ -169,13 +169,13 @@ def serve_layout():
     layout = html.Div([
 
         dcc.Markdown('''
-    # Target Attention Over Time
-
-    The number of compounds published for a given target gives an indication of confidence that
-    the target may yield a successful drug. The following plots show the moving average of the normalised 
-    number of compounds published each year since 1990 for targets in ChEMBL.
+        # Target Attention Over Time
     
-    ***
+        The number of compounds published for a target in a given year gives an indication of the confidence at that 
+        point in time that the target may yield a successful drug. The following plots show the moving average of the 
+        normalised number of compounds published each year since 1990 for targets in ChEMBL.
+        
+        ***
     
             '''.replace('  ', ''), className='container',
                      containerProps={'style': {'maxWidth': '650px'}}),
@@ -183,11 +183,9 @@ def serve_layout():
         dcc.Markdown('''
         ## Contemporary Projects
 
-       These targets represent those for which compounds are being discovered at or near their peak rate. They can
-       be filtered by the maximum phase achieved for the target by double clicking on the desired phase in the legend.
-       Filtering to show only phase 4 suggests that contemporary projects focus on known drug targets. 
-                 
-
+       These targets represent those for which compounds are being discovered at or near their peak rate since 1990. 
+       They can be filtered by the maximum phase achieved for the target by double clicking on the desired phase in the 
+       legend. Filtering to show only phase 4 suggests that majority of contemporary projects focus on known drug targets. 
         *** 
 
                 '''.replace('  ', ''), className='container',
