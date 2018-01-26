@@ -208,7 +208,7 @@ def serve_layout():
                     # this prevents javascript from running inside the iframe
                     # and other things security reasons
                     id='chembl_widget_contemporary',
-                    src="http://chembl-glados.herokuapp.com/target_report_card/CHEMBL204/embed/approved_drugs_clinical_candidates/",
+                    src="https://chembl-glados.herokuapp.com/target_report_card/CHEMBL204/embed/approved_drugs_clinical_candidates/",
                     style={'height': '80vh', 'width':'100%', 'border':'none'}
                 )
             ], className='four columns'),
@@ -235,7 +235,7 @@ def serve_layout():
                     # this prevents javascript from running inside the iframe
                     # and other things security reasons
                     id='chembl_widget_former',
-                    src="http://chembl-glados.herokuapp.com/target_report_card/CHEMBL204/embed/approved_drugs_clinical_candidates/",
+                    src="https://chembl-glados.herokuapp.com/target_report_card/CHEMBL204/embed/approved_drugs_clinical_candidates/",
                     style={'height': '80vh', 'width':'100%', 'border':'none'}
                 )
             ], className='four columns'),
