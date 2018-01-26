@@ -16,8 +16,8 @@
       <file leaf-file-name="app.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="351" column="0" lean-forward="false" selection-start-line="351" selection-start-column="0" selection-end-line="352" selection-end-column="37" />
+            <state relative-caret-position="-289">
+              <caret line="190" column="76" lean-forward="true" selection-start-line="190" selection-start-column="76" selection-end-line="190" selection-end-column="76" />
               <folding />
             </state>
           </provider>
@@ -161,8 +161,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="351" column="0" lean-forward="false" selection-start-line="351" selection-start-column="0" selection-end-line="352" selection-end-column="37" />
+        <state relative-caret-position="-289">
+          <caret line="190" column="76" lean-forward="true" selection-start-line="190" selection-start-column="76" selection-end-line="190" selection-end-column="76" />
           <folding />
         </state>
       </provider>

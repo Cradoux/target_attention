@@ -184,11 +184,11 @@ def serve_layout():
                      containerProps={'style': {'maxWidth': '650px'}}),
 
         dcc.Markdown('''
-        ## Contemporary Projects
+        ## Ongoing Projects
 
        These targets represent those for which compounds are being discovered at or near their peak rate since 1990. 
        They can be filtered by the maximum phase achieved for the target by double clicking on the desired phase in the 
-       legend. Filtering to show only phase 4 suggests that majority of contemporary projects focus on known drug targets. 
+       legend. Filtering to show only phase 4 suggests that majority of ongoing projects focus on known drug targets. 
 
                 '''.replace('  ', ''), className='container',
                      containerProps={'style': {'maxWidth': '650px'}}),
