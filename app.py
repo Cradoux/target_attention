@@ -16,11 +16,12 @@ def create_traces(df_targets, highlight_target, min_val, max_val):
     traces = []
     bupu = cl.scales['9']['div']['PiYG']
     scale = cl.interp(bupu, 500)  # Map color scale to 500 bins
-    grouped = df_targets.groupby('target')
-    for target, df_by_target in grouped:
+    grouped = df_targets.groupby('target_chemblid')
+    for chembl_id, df_by_target in grouped:
         # total = df_by_target['cumsum'].max()
         # if total <50:
         #     continue
+        target = df_by_target['target'].iloc[0]
         growth = df_by_target['best_phase'].max()
         peak_to_current = df_by_target['peak_to_current'].max()
         # if peak_to_current <=min_val or peak_to_current >=max_val:
@@ -80,10 +81,10 @@ def create_traces(df_targets, highlight_target, min_val, max_val):
                 'dash': None,
                 'shape': 'spline'
             },
-            'text': ["{}, {}, {}".format(target, b, c) for b, c in zip(x, y)],
+            'text': ["{},{},{},{}".format(target, chembl_id, b, c) for b, c in zip(x, y)],
             'legendgroup': legendgroup,
             'name': name,
-            'customdata': target,
+            'customdata': (target,chembl_id),
             'hoverinfo': hoverinfo,
             'showlegend': (
                 False if legendgroup in [t['legendgroup'] for t in traces]
@@ -148,7 +149,7 @@ def create_figure(df_targets, highlight_target=None, skip_labels=[], show_only=[
             'zeroline': False,
             # 'type':'log',
             'ticks': '',
-            'title': 'Normalised number of compounds published that year'
+            'title': 'Relative number of compounds published per year'
         },
         'showlegend': True,  # not bool(highlight_target),
         'hovermode': 'closest',
@@ -173,8 +174,8 @@ def serve_layout():
     
         The number of compounds published for a target in a given year gives an indication of the confidence at that 
         point in time that the target may yield a successful drug. The following plots show the moving average of the 
-        normalised number of compounds published each year since 1990 for targets in ChEMBL. Each line is coloured by the
-        target's *attention score*, the ratio between its current and peak publication rate.
+        relative number of compounds published each year since 1990 for targets in ChEMBL. Each line is coloured by the
+        target's *recent attention score*, the ratio between its current and peak publication rate.
         
         ***
     
@@ -187,18 +188,31 @@ def serve_layout():
        These targets represent those for which compounds are being discovered at or near their peak rate since 1990. 
        They can be filtered by the maximum phase achieved for the target by double clicking on the desired phase in the 
        legend. Filtering to show only phase 4 suggests that majority of contemporary projects focus on known drug targets. 
-        *** 
 
                 '''.replace('  ', ''), className='container',
                      containerProps={'style': {'maxWidth': '650px'}}),
 
         html.Div([
-            dcc.Graph(
-                figure=create_figure(df_targets[
-                                         (df_targets['peak_to_current'] > 0.8) & (df_targets['peak_to_current'] < 2)]),
-                id='contempory',
-                style={'height': '85vh'})
-        ]),
+            html.Div([
+                dcc.Graph(
+                    figure=create_figure(df_targets[
+                                             (df_targets['peak_to_current'] > 0.8) & (
+                                             df_targets['peak_to_current'] < 2)]),
+                    id='contemporary',
+                    style={'height': '85vh'})
+            ], className='eight columns'),
+            html.Div([
+                html.Iframe(
+                    # enable all sandbox features
+                    # see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
+                    # this prevents javascript from running inside the iframe
+                    # and other things security reasons
+                    id='chembl_widget_contemporary',
+                    src="http://chembl-glados.herokuapp.com/target_report_card/CHEMBL204/embed/approved_drugs_clinical_candidates/",
+                    style={'height': '80vh', 'width':'100%', 'border':'none'}
+                )
+            ], className='four columns'),
+        ], className='row',  style={'padding-bottom':'10vh', 'padding-top':'10vh'}),
 
         dcc.Markdown('''
         ## Former Projects
@@ -210,18 +224,31 @@ def serve_layout():
         by clicking on the legend. For example, double clicking 'Discovery' will only display targets that have
         yet to make it into the clinic. These targets represent a potential set of intractable targets. 
 
-        *** 
-
             '''.replace('  ', ''), className='container',
                      containerProps={'style': {'maxWidth': '650px'}}),
 
         html.Div([
-            dcc.Graph(
-                figure=create_figure(df_targets[
-                                         (df_targets['peak_to_current'] > 0) & (df_targets['peak_to_current'] < 0.3)]),
-                id='abandoned',
-                style={'height': '85vh'})
-        ]),
+            html.Div([
+                html.Iframe(
+                    # enable all sandbox features
+                    # see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
+                    # this prevents javascript from running inside the iframe
+                    # and other things security reasons
+                    id='chembl_widget_former',
+                    src="http://chembl-glados.herokuapp.com/target_report_card/CHEMBL204/embed/approved_drugs_clinical_candidates/",
+                    style={'height': '80vh', 'width':'100%', 'border':'none'}
+                )
+            ], className='four columns'),
+
+            html.Div([
+                dcc.Graph(
+                    figure=create_figure(df_targets[
+                                             (df_targets['peak_to_current'] > 0) & (
+                                             df_targets['peak_to_current'] < 0.3)]),
+                    id='former',
+                    style={'height': '85vh'})
+            ], className='eight columns'),
+        ],className='row',  style={'padding-bottom':'10vh','padding-top':'10vh'}),
 
         dcc.Markdown('''
     
@@ -250,7 +277,7 @@ def serve_layout():
                 )
             ], className='row', style={'padding-bottom': '10px'}),
             html.Div([
-                html.Label('Attention score', id='num_compounds_label', className='inline'),
+                html.Label('Current attention score', id='num_compounds_label', className='inline'),
                 dcc.RangeSlider(
                     id='peak_current',
                     min=0,
@@ -326,6 +353,29 @@ def filter(n_clicks, selected_value, range_value, category_filter):
 
     return figure
 
+@app.callback(
+    Output('chembl_widget_contemporary', 'src'),
+    [Input('contemporary', 'clickData')],
+    )
+def get_contemporary_widget(selected_value):
+
+    print selected_value
+    chembl_id = selected_value['points'][0]['text'].split(',')[1]
+    src = "http://chembl-glados.herokuapp.com/target_report_card/{}/embed/approved_drugs_clinical_candidates/".format(chembl_id)
+
+    return src
+
+@app.callback(
+    Output('chembl_widget_former', 'src'),
+    [Input('former', 'clickData')],
+    )
+def get_former_widget(selected_value):
+
+    print selected_value
+    chembl_id = selected_value['points'][0]['text'].split(',')[1]
+    src = "http://chembl-glados.herokuapp.com/target_report_card/{}/embed/approved_drugs_clinical_candidates/".format(chembl_id)
+
+    return src
 
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(port=9999)
