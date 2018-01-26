@@ -361,7 +361,7 @@ def get_contemporary_widget(selected_value):
 
     print selected_value
     chembl_id = selected_value['points'][0]['text'].split(',')[1]
-    src = "http://chembl-glados.herokuapp.com/target_report_card/{}/embed/approved_drugs_clinical_candidates/".format(chembl_id)
+    src = "https://chembl-glados.herokuapp.com/target_report_card/{}/embed/approved_drugs_clinical_candidates/".format(chembl_id)
 
     return src
 
@@ -373,7 +373,7 @@ def get_former_widget(selected_value):
 
     print selected_value
     chembl_id = selected_value['points'][0]['text'].split(',')[1]
-    src = "http://chembl-glados.herokuapp.com/target_report_card/{}/embed/approved_drugs_clinical_candidates/".format(chembl_id)
+    src = "https://chembl-glados.herokuapp.com/target_report_card/{}/embed/approved_drugs_clinical_candidates/".format(chembl_id)
 
     return src
 
