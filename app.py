@@ -81,7 +81,7 @@ def create_traces(df_targets, highlight_target, min_val, max_val):
                 'dash': None,
                 'shape': 'spline'
             },
-            'text': ["{},{},{},{}".format(target, chembl_id, b, c) for b, c in zip(x, y)],
+            'text': ["{}\n{}\nYear {}\n{}".format(target, chembl_id, b, name) for b in x],
             'legendgroup': legendgroup,
             'name': name,
             'customdata': (target,chembl_id),
@@ -175,7 +175,8 @@ def serve_layout():
         The number of compounds published for a target in a given year gives an indication of the confidence at that 
         point in time that the target may yield a successful drug. The following plots show the moving average of the 
         relative number of compounds published each year since 1990 for targets in ChEMBL. Each line is coloured by the
-        target's *recent attention score*, the ratio between its current and peak publication rate.
+        target's *recent attention score*, the ratio between its current and peak publication rate. **Click** on a line
+        to display any clinical compounds found in ChEMBL, or a summary of bioactivty data in the case of discovery compounds.
         
         ***
     
@@ -197,10 +198,10 @@ def serve_layout():
                 dcc.Graph(
                     figure=create_figure(df_targets[
                                              (df_targets['peak_to_current'] > 0.8) & (
-                                             df_targets['peak_to_current'] < 2)]),
+                                             df_targets['peak_to_current'] <= 1)]),
                     id='contemporary',
                     style={'height': '85vh'})
-            ], className='eight columns'),
+            ], className='seven columns'),
             html.Div([
                 html.Iframe(
                     # enable all sandbox features
@@ -211,7 +212,7 @@ def serve_layout():
                     src="https://chembl-glados.herokuapp.com/target_report_card/CHEMBL204/embed/approved_drugs_clinical_candidates/",
                     style={'height': '80vh', 'width':'100%', 'border':'none'}
                 )
-            ], className='four columns'),
+            ], className='five columns'),
         ], className='row',  style={'padding-bottom':'10vh', 'padding-top':'10vh'}),
 
         dcc.Markdown('''
@@ -238,16 +239,16 @@ def serve_layout():
                     src="https://chembl-glados.herokuapp.com/target_report_card/CHEMBL204/embed/approved_drugs_clinical_candidates/",
                     style={'height': '80vh', 'width':'100%', 'border':'none'}
                 )
-            ], className='four columns'),
+            ], className='five columns'),
 
             html.Div([
                 dcc.Graph(
                     figure=create_figure(df_targets[
-                                             (df_targets['peak_to_current'] > 0) & (
+                                             (df_targets['peak_to_current'] >= 0) & (
                                              df_targets['peak_to_current'] < 0.3)]),
                     id='former',
                     style={'height': '85vh'})
-            ], className='eight columns'),
+            ], className='seven columns'),
         ],className='row',  style={'padding-bottom':'10vh','padding-top':'10vh'}),
 
         dcc.Markdown('''
@@ -297,7 +298,7 @@ def serve_layout():
                 figure=create_figure(df_targets), id='overview',
                 style={'height': '85vh'})
         ]),
-    ])
+    ],style={'width':'98%'})
 
     return layout
 
@@ -337,7 +338,7 @@ def filter(n_clicks, selected_value, range_value, category_filter):
         df_filtered = df_targets[
             (df_targets['peak_to_current'] > range_value[0]) & (df_targets['peak_to_current'] < range_value[1])]
     else:
-        target = selected_value['points'][0]['text'].split(',')[0]
+        target = selected_value['points'][0]['text'].split('\n')[0]
         filter_li = [target]
         df_filtered = df_targets
     figure = create_figure(
@@ -348,10 +349,12 @@ def filter(n_clicks, selected_value, range_value, category_filter):
         max_val=range_value[1]
     )
 
-    for trace in figure['data']:
-        trace['hoverinfo'] = 'text'
+    # for trace in figure['data']:
+    #     trace['hoverinfo'] = 'text'
 
     return figure
+
+
 
 @app.callback(
     Output('chembl_widget_contemporary', 'src'),
@@ -359,9 +362,14 @@ def filter(n_clicks, selected_value, range_value, category_filter):
     )
 def get_contemporary_widget(selected_value):
 
-    print selected_value
-    chembl_id = selected_value['points'][0]['text'].split(',')[1]
-    src = "https://chembl-glados.herokuapp.com/target_report_card/{}/embed/approved_drugs_clinical_candidates/".format(chembl_id)
+
+    chembl_id = selected_value['points'][0]['text'].split('\n')[1]
+    max_phase = selected_value['points'][0]['text'].split('\n')[3]
+    if max_phase !='Discovery':
+        src = "https://chembl-glados.herokuapp.com/target_report_card/{}/embed/approved_drugs_clinical_candidates/".format(chembl_id)
+    else:
+        src = "https://chembl-glados.herokuapp.com/target_report_card/{}/embed/bioactivities/".format(
+            chembl_id)
 
     return src
 
@@ -371,9 +379,15 @@ def get_contemporary_widget(selected_value):
     )
 def get_former_widget(selected_value):
 
-    print selected_value
-    chembl_id = selected_value['points'][0]['text'].split(',')[1]
-    src = "https://chembl-glados.herokuapp.com/target_report_card/{}/embed/approved_drugs_clinical_candidates/".format(chembl_id)
+
+    chembl_id = selected_value['points'][0]['text'].split('\n')[1]
+    max_phase = selected_value['points'][0]['text'].split('\n')[3]
+
+    if max_phase !='Discovery':
+        src = "https://chembl-glados.herokuapp.com/target_report_card/{}/embed/approved_drugs_clinical_candidates/".format(chembl_id)
+    else:
+        src = "https://chembl-glados.herokuapp.com/target_report_card/{}/embed/bioactivities/".format(
+            chembl_id)
 
     return src
 
