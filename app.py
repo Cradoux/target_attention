@@ -75,10 +75,12 @@ def create_traces(df_targets, highlight_target, min_val, max_val):
             'x': x,
             'y': y,
             'mode': 'lines',
+            'showscale': True,
             'line': {
                 'color': color,
                 'width': width,
                 'dash': None,
+
                 'shape': 'spline'
             },
             'text': ["{}\n{}\nYear {}\n{}".format(target, chembl_id, b, name) for b in x],
@@ -86,6 +88,7 @@ def create_traces(df_targets, highlight_target, min_val, max_val):
             'name': name,
             'customdata': (target,chembl_id),
             'hoverinfo': hoverinfo,
+
             'showlegend': (
                 False if legendgroup in [t['legendgroup'] for t in traces]
                 else True
@@ -151,7 +154,8 @@ def create_figure(df_targets, highlight_target=None, skip_labels=[], show_only=[
             'ticks': '',
             'title': 'Relative number of compounds published per year'
         },
-        'showlegend': True,  # not bool(highlight_target),
+        'showlegend': not bool(highlight_target),
+
         'hovermode': 'closest',
         'legend': {
             'x': 0.8,
