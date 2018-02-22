@@ -213,7 +213,7 @@ def serve_layout():
                     # this prevents javascript from running inside the iframe
                     # and other things security reasons
                     id='chembl_widget_contemporary',
-                    src="https://chembl-glados.herokuapp.com/target_report_card/CHEMBL204/embed/approved_drugs_clinical_candidates/",
+                    src="https://chembl-glados.herokuapp.com/embed/#target_report_card/CHEMBL301/bioactivities",
                     style={'height': '80vh', 'width':'100%', 'border':'none'}
                 )
             ], className='five columns'),
@@ -240,7 +240,7 @@ def serve_layout():
                     # this prevents javascript from running inside the iframe
                     # and other things security reasons
                     id='chembl_widget_former',
-                    src="https://chembl-glados.herokuapp.com/target_report_card/CHEMBL204/embed/approved_drugs_clinical_candidates/",
+                    src="https://chembl-glados.herokuapp.com/embed/#target_report_card/CHEMBL301/bioactivities",
                     style={'height': '80vh', 'width':'100%', 'border':'none'}
                 )
             ], className='five columns'),
@@ -370,9 +370,9 @@ def get_contemporary_widget(selected_value):
     chembl_id = selected_value['points'][0]['text'].split('\n')[1]
     max_phase = selected_value['points'][0]['text'].split('\n')[3]
     if max_phase !='Discovery':
-        src = "https://chembl-glados.herokuapp.com/target_report_card/{}/embed/approved_drugs_clinical_candidates/".format(chembl_id)
+        src = "https://chembl-glados.herokuapp.com/embed/#target_report_card/{}/approved_drugs_clinical_candidates".format(chembl_id)
     else:
-        src = "https://chembl-glados.herokuapp.com/target_report_card/{}/embed/bioactivities/".format(
+        src = "https://chembl-glados.herokuapp.com/embed/#target_report_card/{}/bioactivities".format(
             chembl_id)
 
     return src
@@ -388,9 +388,9 @@ def get_former_widget(selected_value):
     max_phase = selected_value['points'][0]['text'].split('\n')[3]
 
     if max_phase !='Discovery':
-        src = "https://chembl-glados.herokuapp.com/target_report_card/{}/embed/approved_drugs_clinical_candidates/".format(chembl_id)
+        src = "https://chembl-glados.herokuapp.com/embed/#target_report_card/{}/approved_drugs_clinical_candidates".format(chembl_id)
     else:
-        src = "https://chembl-glados.herokuapp.com/target_report_card/{}/embed/bioactivities/".format(
+        src = "https://chembl-glados.herokuapp.com/embed/#target_report_card/{}/bioactivities".format(
             chembl_id)
 
     return src
